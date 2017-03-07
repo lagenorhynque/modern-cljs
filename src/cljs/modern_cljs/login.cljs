@@ -1,5 +1,6 @@
 (ns modern-cljs.login
-  (:require [domina.core :refer [by-id value]]))
+  (:require [domina.core :refer [by-id value]]
+            [domina.events :refer [listen!]]))
 
 (defn validate-form []
   (if (and (> (count (value (by-id "email"))) 0)
@@ -10,6 +11,7 @@
 
 (defn ^:export init []
   (if (and js/document
-           (.-getElementById js/document))
-    (let [login-form (.getElementById js/document "loginForm")]
-      (set! (.-onsubmit login-form) validate-form))))
+           (aget js/document "getElementById"))
+    (listen! (by-id "submit")
+             :click
+             validate-form)))
